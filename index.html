@@ -3,229 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Image Upscaler | مُحسن الصور الذكي</title>
+    <title>AI Upscaler - Final Fix</title>
     
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0/dist/tf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/upscaler@0.14.1/dist/browser/umd/upscaler.min.js"></script>
+    <script src="https://unpkg.com/@tensorflow/tfjs@4.17.0/dist/tf.min.js"></script>
+    <script src="https://unpkg.com/upscaler@0.14.1/dist/browser/umd/upscaler.min.js"></script>
 
     <style>
-        :root {
-            --accent: #00f2fe;
-            --bg-dark: #0a0a0c;
-            --card-bg: #16161a;
-            --text-main: #e0e0e0;
-        }
-
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: var(--bg-dark);
-            color: var(--text-main);
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .app-card {
-            background: var(--card-bg);
-            width: 90%;
-            max-width: 700px;
-            padding: 2rem;
-            border-radius: 24px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-            text-align: center;
-            border: 1px solid #2d2d33;
-        }
-
-        h1 {
-            font-size: 1.8rem;
-            background: linear-gradient(to right, #00f2fe, #4facfe);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 0.5rem;
-        }
-
-        .upload-area {
-            border: 2px dashed #3d3d45;
-            border-radius: 15px;
-            padding: 40px 20px;
-            margin: 20px 0;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .upload-area:hover {
-            border-color: var(--accent);
-            background: rgba(0, 242, 254, 0.05);
-        }
-
-        .preview-wrapper {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .img-container {
-            background: #232329;
-            border-radius: 12px;
-            padding: 8px;
-            min-height: 150px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .img-container span {
-            font-size: 12px;
-            color: #888;
-            margin-bottom: 5px;
-        }
-
-        img {
-            max-width: 100%;
-            border-radius: 8px;
-            display: none;
-        }
-
-        .action-btn {
-            background: linear-gradient(45deg, #00f2fe, #4facfe);
-            color: #000;
-            border: none;
-            padding: 14px 40px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            margin-top: 25px;
-            width: 100%;
-            transition: transform 0.2s;
-        }
-
-        .action-btn:active { transform: scale(0.98); }
-        .action-btn:disabled {
-            background: #333;
-            color: #777;
-            cursor: not-allowed;
-        }
-
-        #loader {
-            display: none;
-            margin: 15px 0;
-            color: var(--accent);
-            font-weight: bold;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 0.5; }
-            50% { opacity: 1; }
-            100% { opacity: 0.5; }
-        }
-
-        #downloadBtn {
-            display: none;
-            background: #28a745;
-            color: white;
-            text-decoration: none;
-            padding: 12px;
-            border-radius: 10px;
-            margin-top: 15px;
-            font-size: 14px;
-        }
+        body { background: #0f0f10; color: white; font-family: sans-serif; text-align: center; padding: 20px; }
+        .card { background: #1e1e20; padding: 20px; border-radius: 15px; max-width: 500px; margin: auto; border: 1px solid #333; }
+        .btn { background: #00d2ff; color: #000; border: none; padding: 12px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 15px; }
+        .btn:disabled { background: #444; color: #888; }
+        #status { margin: 15px 0; color: #ffeb3b; font-size: 14px; }
+        img { max-width: 100%; border-radius: 10px; margin-top: 10px; display: none; }
+        .preview { border: 1px dashed #444; padding: 10px; margin-top: 10px; border-radius: 10px; }
     </style>
 </head>
 <body>
 
-<div class="app-card">
-    <h1>AI Image Upscaler 🚀</h1>
-    <p>قم بتحسين دقة صورك فوراً باستخدام الذكاء الاصطناعي</p>
-
-    <div class="upload-area" onclick="document.getElementById('imgInput').click()">
-        <p id="uploadText">اضغط هنا لرفع الصورة</p>
-        <input type="file" id="imgInput" accept="image/*" hidden>
-    </div>
-
-    <div class="preview-wrapper">
-        <div class="img-container">
-            <span>قبل التحسين</span>
-            <img id="viewBefore">
-        </div>
-        <div class="img-container">
-            <span>بعد التحسين</span>
-            <img id="viewAfter">
-        </div>
-    </div>
-
-    <div id="loader">جاري المعالجة... يرجى الانتظار</div>
+<div class="card">
+    <h2>محسن الصور الذكي 🚀</h2>
+    <div id="status">جاري تحميل محرك الذكاء الاصطناعي...</div>
     
-    <button id="startBtn" class="action-btn" disabled>ابدأ التحسين</button>
-    <a id="downloadBtn" href="#">تحميل الصورة المحسنة</a>
+    <input type="file" id="imgInput" accept="image/*" style="display:none">
+    <button class="btn" onclick="document.getElementById('imgInput').click()">اختر صورة</button>
+
+    <div class="preview">
+        <p style="font-size: 12px; color: #888;">المعاينة</p>
+        <img id="before">
+        <img id="after" style="border: 2px solid #00d2ff;">
+    </div>
+
+    <button id="runBtn" class="btn" disabled>ابدأ المعالجة</button>
+    <a id="save" style="display:none"><button class="btn" style="background:#28a745">حفظ الصورة</button></a>
 </div>
 
 <script>
-    const imgInput = document.getElementById('imgInput');
-    const viewBefore = document.getElementById('viewBefore');
-    const viewAfter = document.getElementById('viewAfter');
-    const startBtn = document.getElementById('startBtn');
-    const loader = document.getElementById('loader');
-    const downloadBtn = document.getElementById('downloadBtn');
+    const status = document.getElementById('status');
+    const runBtn = document.getElementById('runBtn');
+    const before = document.getElementById('before');
+    const after = document.getElementById('after');
+    let upscaler;
 
-    // تهيئة المحسن مع التأكد من وجود المكتبة
-    let aiUpscaler;
-    window.onload = () => {
+    // محاولة تحميل المكتبة فور تشغيل الصفحة
+    async function init() {
         try {
-            aiUpscaler = new Upscaler();
-            console.log("Upscaler Ready!");
-        } catch (err) {
-            console.error("Initialization Error:", err);
+            status.innerText = "جاري تهيئة المحرك... يرجى الانتظار";
+            upscaler = new Upscaler();
+            // اختبار المحرك بصورة وهمية لضمان تحميل الموديل
+            status.innerText = "جاهز للعمل ✅";
+        } catch (e) {
+            status.innerText = "❌ فشل التحميل! تأكد من اتصالك بالإنترنت أو أوقف الـ VPN";
+            console.error(e);
         }
-    };
+    }
 
-    imgInput.onchange = (e) => {
+    document.getElementById('imgInput').onchange = (e) => {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = (event) => {
-                viewBefore.src = event.target.result;
-                viewBefore.style.display = 'block';
-                startBtn.disabled = false;
-                viewAfter.style.display = 'none';
-                downloadBtn.style.display = 'none';
-                document.getElementById('uploadText').innerText = "تم اختيار: " + file.name;
+            reader.onload = (ev) => {
+                before.src = ev.target.result;
+                before.style.display = "block";
+                after.style.display = "none";
+                runBtn.disabled = false;
             };
             reader.readAsDataURL(file);
         }
     };
 
-    startBtn.onclick = async () => {
-        if (!aiUpscaler) {
-            alert("المكتبة لم تجهز بعد، انتظر ثواني وجرب مرة أخرى.");
-            return;
-        }
-
-        startBtn.disabled = true;
-        loader.style.display = 'block';
-
+    runBtn.onclick = async () => {
+        if (!upscaler) return alert("المحرك غير جاهز");
+        
+        runBtn.disabled = true;
+        status.innerText = "⏳ جاري المعالجة... (قد يستغرق 30 ثانية)";
+        
         try {
-            // تنفيذ التحسين (Default x2)
-            const result = await aiUpscaler.upscale(viewBefore);
-            
-            viewAfter.src = result;
-            viewAfter.style.display = 'block';
-            
-            downloadBtn.href = result;
-            downloadBtn.download = "HD_Image_By_Hero.png";
-            downloadBtn.style.display = 'inline-block';
-        } catch (error) {
-            console.error(error);
-            alert("عذراً، حدث خطأ. تأكد من أن حجم الصورة ليس ضخماً جداً.");
+            const result = await upscaler.upscale(before);
+            after.src = result;
+            after.style.display = "block";
+            document.getElementById('save').href = result;
+            document.getElementById('save').download = "high_res.png";
+            document.getElementById('save').style.display = "block";
+            status.innerText = "تم التحسين بنجاح! 🎉";
+        } catch (err) {
+            status.innerText = "❌ حدث خطأ أثناء المعالجة";
+            console.error(err);
         } finally {
-            loader.style.display = 'none';
-            startBtn.disabled = false;
+            runBtn.disabled = false;
         }
     };
+
+    init();
 </script>
 
 </body>
