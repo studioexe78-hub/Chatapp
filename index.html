@@ -3,22 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Ultra-Sharpen Upscaler | مُحسن الصور الخارق</title>
-    
-    <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
-
+    <title>AI Image Upscaler Pro 🚀</title>
     <style>
         :root {
             --primary: #00f2fe;
-            --secondary: #4facfe;
-            --bg: #0a0c10;
-            --card: #14171f;
-            --text: #c9d1d9;
-            --border: #30363d;
+            --bg: #0d1117;
+            --card: #161b22;
+            --text: #e6edf3;
+            --accent: #238636;
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, -apple-system, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
@@ -28,250 +24,158 @@
             min-height: 100vh;
         }
 
-        .app-container {
+        .container {
             width: 90%;
-            max-width: 600px;
+            max-width: 500px;
             background: var(--card);
             padding: 30px;
-            border-radius: 28px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-            border: 1px solid var(--border);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            border: 1px solid #30363d;
             text-align: center;
         }
 
-        h1 {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-size: 26px;
-            margin-bottom: 5px;
-        }
+        h1 { color: var(--primary); margin-bottom: 10px; font-size: 24px; }
+        .status-msg { font-size: 14px; color: #8b949e; margin-bottom: 20px; }
 
-        .subtitle { color: #8b949e; font-size: 14px; margin-bottom: 25px; }
-
-        .upload-zone {
-            padding: 50px 20px;
-            border: 2px dashed var(--border);
-            border-radius: 20px;
+        .drop-zone {
+            border: 2px dashed #30363d;
+            padding: 40px 20px;
+            border-radius: 15px;
             cursor: pointer;
             transition: 0.3s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
         }
 
-        .upload-zone:hover {
-            border-color: var(--primary);
-            background: rgba(0, 242, 254, 0.03);
-        }
-
-        .upload-icon { font-size: 40px; color: var(--border); }
+        .drop-zone:hover { border-color: var(--primary); background: rgba(0, 242, 254, 0.05); }
 
         .btn {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: #000;
+            background: var(--primary);
+            color: #0d1117;
             border: none;
-            padding: 16px 30px;
-            border-radius: 14px;
+            padding: 15px 30px;
+            border-radius: 10px;
             font-weight: bold;
             font-size: 16px;
             cursor: pointer;
             width: 100%;
-            transition: 0.3s;
             margin-top: 15px;
+            transition: 0.2s;
         }
 
-        .btn:active { transform: scale(0.98); }
+        .btn:disabled { background: #30363d; color: #8b949e; cursor: not-allowed; }
 
-        #loader {
-            display: none;
-            margin: 30px 0;
-            color: var(--primary);
-            font-weight: bold;
-            animation: pulse 1.5s infinite;
-        }
+        #loader { display: none; margin: 20px 0; color: var(--primary); font-weight: bold; }
 
-        @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
-
-        .preview-area {
-            margin-top: 30px;
-            display: none;
-        }
-
-        .result-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .result-container span {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0,242,254,0.1);
-            color: var(--primary);
-            padding: 4px 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            border: 1px solid var(--primary);
-        }
+        .result-area { display: none; margin-top: 25px; }
 
         canvas {
             width: 100%;
-            max-height: 500px;
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            object-fit: contain;
+            border-radius: 12px;
+            border: 1px solid #30363d;
+            margin-bottom: 15px;
         }
 
-        .download-btn {
-            background: #238636;
+        .download-link {
+            background: var(--accent);
             color: white;
             text-decoration: none;
             display: block;
             padding: 15px;
-            border-radius: 14px;
-            margin-top: 15px;
+            border-radius: 10px;
             font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <h1>AI Ultra-Sharpen Upscaler 🚀</h1>
-    <div class="subtitle">تحسين احترافي للدقة والحدة بواسطة Cloudinary + HTML5 Canvas</div>
+<div class="container">
+    <h1>AI Image Upscaler 🚀</h1>
+    <p class="status-msg">تحسين الدقة والوضوح بتقنية Cloudinary AI</p>
 
-    <div class="upload-zone" id="uploadBtn">
-        <div class="upload-icon">📸</div>
-        <p id="statusText">اضغط لرفع الصورة من جهازك</p>
+    <div class="drop-zone" onclick="document.getElementById('fileInput').click()">
+        <p id="fileNameDisplay">اضغط هنا لاختيار صورة</p>
+        <input type="file" id="fileInput" accept="image/*" hidden>
     </div>
 
-    <div id="loader">⏳ جاري تكبير الصورة وتحسين الحدة... يرجى الانتظار ثواني</div>
+    <div id="loader">⏳ جاري المعالجة الذكية... قد يستغرق الأمر ثواني</div>
 
-    <div class="preview-area" id="previewArea">
-        <div class="result-container">
-            <span>النتيجة الخارقة (HD + Sharp)</span>
-            <canvas id="resultCanvas"></canvas>
-        </div>
-        <a id="downloadLink" href="#" target="_blank" class="download-btn">حفظ الصورة بجودة احترافية</a>
+    <div class="result-area" id="resultArea">
+        <canvas id="outputCanvas"></canvas>
+        <a id="downloadBtn" href="#" class="download-link">تحميل الصورة بجودة HD</a>
     </div>
 </div>
 
 <script>
-    // --- إعدادات Cloudinary الخاصة بك ---
-    const cloudName = "dg75swlx9"; 
-    const apiKey = "785218438847777";
-    const uploadPreset = "unsigned_preset"; // تأكد أنه Unsigned في إعداداتك
+    // --- إعداداتك الخاصة ---
+    const cloudName = "dg75swlx9";
+    const uploadPreset = "ml_default"; // الاسم اللي أكدت عليه
 
-    const uploadBtn = document.getElementById('uploadBtn');
-    const previewArea = document.getElementById('previewArea');
-    const resultCanvas = document.getElementById('resultCanvas');
+    const fileInput = document.getElementById('fileInput');
     const loader = document.getElementById('loader');
-    const downloadLink = document.getElementById('downloadLink');
+    const resultArea = document.getElementById('resultArea');
+    const outputCanvas = document.getElementById('outputCanvas');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const fileNameDisplay = document.getElementById('fileNameDisplay');
 
-    // 1. إعداد الـ Upload Widget
-    const myWidget = cloudinary.createUploadWidget({
-        cloudName: cloudName,
-        uploadPreset: ml_default,
-        apiKey: apiKey,
-        multiple: false,
-        sources: ["local", "url", "camera"],
-        theme: "minimal",
-        clientAllowedFormats: ["png","jpg","jpeg"]
-    }, (error, result) => {
-        if (!error && result && result.event === "success") {
-            processImageWithCloudinaryAI(result.info.public_id, result.info.format);
-        }
-    });
+    fileInput.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
 
-    uploadBtn.onclick = () => myWidget.open();
-
-    // 2. تحسين الصورة بواسطة Cloudinary AI
-    function processImageWithCloudinaryAI(publicId, format) {
+        fileNameDisplay.innerText = "تم اختيار: " + file.name;
         loader.style.display = "block";
-        uploadBtn.style.display = "none";
+        resultArea.style.display = "none";
 
-        // نستخدم روابط التحويل الذكي للتكبير
-        const enhancedUrl = `https://res.cloudinary.com/${cloudName}/image/upload/e_upscale,w_2000,c_limit,q_auto:best/${publicId}.${format}`;
-        
-        // تحميل الصورة المحسنة في الخلفية
-        const img = new Image();
-        img.crossOrigin = "anonymous"; // ضروري للسماح للـ Canvas بالتعامل مع الصورة
-        img.src = enhancedUrl;
+        // 1. إعداد الرفع
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', uploadPreset);
 
-        img.onload = () => {
-            // 3. تطبيق فلتر الحدة اليدوي بواسطة HTML5 Canvas
-            applyUltraSharpenFilter(img);
-        };
-    }
+        try {
+            // 2. الرفع المباشر لـ Cloudinary
+            const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+                method: 'POST',
+                body: formData
+            });
 
-    // 4. دالة فلتر الحدة اليدوي (The Secret Sauce)
-    function applyUltraSharpenFilter(sourceImg) {
-        const ctx = resultCanvas.getContext('2d');
-        
-        // ضبط أبعاد الـ Canvas لتطابق الصورة
-        resultCanvas.width = sourceImg.width;
-        resultCanvas.height = sourceImg.height;
-        
-        // رسم الصورة الأصلية
-        ctx.drawImage(sourceImg, 0, 0);
+            const data = await response.json();
 
-        // جلب بكسلات الصورة
-        const imageData = ctx.getImageData(0, 0, resultCanvas.width, resultCanvas.height);
-        const pixels = imageData.data;
-
-        // مصفوفة "الالتفاف" لفلتر الحدة (Unsharp Masking - High Pass)
-        // [ 0, -1, 0 ]
-        // [ -1, 5, -1 ]
-        // [ 0, -1, 0 ]
-        const matrix = [ 0, -1, 0, -1, 5, -1, 0, -1, 0 ];
-        const weight = 1; // وزن الفلتر
-
-        // تطبيق الفلتر على البكسلات (خوارزمية Convolution)
-        const side = Math.round(Math.sqrt(matrix.length));
-        const halfSide = Math.floor(side/2);
-        const w = imageData.width;
-        const h = imageData.height;
-
-        const src = new Uint32Array(pixels.buffer); // مصفوفة سريعة للنسخ
-        for (let y=0; y<h; y++) {
-            for (let x=0; x<w; x++) {
-                let r=0, g=0, b=0;
-                for (let cy=0; cy<side; cy++) {
-                    for (let cx=0; cx<side; cx++) {
-                        const scy = y + cy - halfSide;
-                        const scx = x + cx - halfSide;
-                        if (scy >= 0 && scy < h && scx >= 0 && scx < w) {
-                            const srcPos = (scy * w + scx) * 4;
-                            const wt = matrix[cy * side + cx];
-                            r += pixels[srcPos] * wt;
-                            g += pixels[srcPos+1] * wt;
-                            b += pixels[srcPos+2] * wt;
-                        }
-                    }
-                }
-                const dstPos = (y * w + x) * 4;
-                pixels[dstPos] = r;
-                pixels[dstPos+1] = g;
-                pixels[dstPos+2] = b;
+            if (data.public_id) {
+                // 3. تطبيق فلاتر AI قوية جداً:
+                // e_upscale: تكبير ذكي
+                // e_unsharp_mask:90: زيادة حدة التفاصيل
+                // q_auto:best: جودة قصوى
+                const finalUrl = `https://res.cloudinary.com/${cloudName}/image/upload/e_upscale,w_1800,c_limit,e_unsharp_mask:100,q_auto:best/${data.public_id}.${data.format}`;
+                
+                renderResult(finalUrl);
+            } else {
+                alert("خطأ: تأكد أن إعداد ml_default هو Unsigned في حسابك.");
+                loader.style.display = "none";
             }
-        }
-
-        // تحديث بكسلات الـ Canvas بالنتيجة الحادة
-        ctx.putImageData(imageData, 0, 0);
-
-        // عرض النتيجة وتجهيز رابط التحميل
-        setTimeout(() => {
+        } catch (err) {
+            console.error(err);
+            alert("حدث خطأ في الاتصال بالسيرفر.");
             loader.style.display = "none";
-            previewArea.style.display = "block";
-            downloadLink.href = resultCanvas.toDataURL("image/png", 1.0); // تصدير بجودة 100%
-            downloadLink.download = "Ultra_Sharp_Image.png";
-        }, 1000);
+        }
+    };
+
+    function renderResult(url) {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.src = url;
+        
+        img.onload = () => {
+            const ctx = outputCanvas.getContext('2d');
+            outputCanvas.width = img.width;
+            outputCanvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+
+            loader.style.display = "none";
+            resultArea.style.display = "block";
+            
+            // تحويل الـ Canvas لرابط تحميل
+            downloadBtn.href = outputCanvas.toDataURL("image/png");
+            downloadBtn.download = "Enhanced_Photo_HD.png";
+        };
     }
 </script>
 
