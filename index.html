@@ -153,7 +153,7 @@
     // إعداد الـ Cloudinary Upload Widget
     const myWidget = cloudinary.createUploadWidget({
         cloudName: cloudName,
-        uploadPreset: 'unsigned_preset', // تأكد من إنشاء 'Unsigned Preset' في إعدادات Cloudinary
+        uploadPreset: 'ml_default', // تأكد من إنشاء 'Unsigned Preset' في إعدادات Cloudinary
         apiKey: apiKey,
         multiple: false,
         sources: ["local", "url", "camera"],
